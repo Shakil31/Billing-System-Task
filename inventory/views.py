@@ -11,8 +11,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsManager()]
-        # List/Retrieve for Staff
-        # List/Retrieve for Staff
+
         return [IsStaff()]
 
     def perform_destroy(self, instance):

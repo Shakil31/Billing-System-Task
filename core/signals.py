@@ -33,8 +33,6 @@ def log_product_changes(sender, instance, created, **kwargs):
             if old.selling_price != instance.selling_price:
                 details['price_change'] = {'from': str(old.selling_price), 'to': str(instance.selling_price)}
             
-            # If no changes in relevant fields, maybe don't log? 
-            # But let's log if details exist.
     
     if details or action == 'CREATE':
         AuditLog.objects.create(

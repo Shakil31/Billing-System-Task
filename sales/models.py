@@ -25,4 +25,6 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     def line_total(self):
-        return self.quantity * self.price
+        if self.quantity and self.price:
+            return self.quantity * self.price
+        return 0

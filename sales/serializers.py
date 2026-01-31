@@ -59,13 +59,14 @@ class OrderSerializer(serializers.ModelSerializer):
             for item_data in items_data:
                 # Lock the product row to prevent race conditions
                 product = Product.objects.select_for_update().get(pk=item_data['product'].pk)
+                qty = item_data['quantity']
 
                 # Stock Check
                 if product.quantity < qty:
                     raise serializers.ValidationError(f"Not enough stock for {product.name}. Available: {product.quantity}")
 
                 # Atomic Decrement
-                product.quantity = F('quantity') - qty
+                product.quantity = product.quantity - qty
                 product.save()
                 
                 # Fetch fresh price

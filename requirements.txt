@@ -1,5 +1,6 @@
-django>=5.0
+Django>=5.0
 djangorestframework
 django-filter
 django-widget-tweaks
 xhtml2pdf
+Pillow

@@ -1,0 +1,5 @@
+django>=5.0
+djangorestframework
+django-filter
+django-widget-tweaks
+xhtml2pdf

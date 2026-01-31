@@ -14,41 +14,6 @@ from customers.models import Customer
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 
-class OrderItemViewSet(viewsets.ModelViewSet):
-    queryset = OrderItem.objects.select_related('order', 'product').all()
-    serializer_class = OrderItemSerializer
-    permission_classes = [permissions.IsAdminUser]
-
-    def perform_create(self, serializer):
-        # When creating an item directly, we need to handle stock and price logic similar to bulk order creation
-        # However, the simple serializer usually just saves.
-        # Let's add basic logic to update order total and deduct stock if needed, 
-        # or rely on Signals if we had them for OrderItem (we only have them for Product/Order logging).
-        # For simplicity and robustness, we'll implement the stock/price logic here.
-        
-        item = serializer.save()
-        
-        # 1. Update Price from Product
-        if not item.price:
-            item.price = item.product.selling_price
-            item.save()
-            
-        # 2. Update Order Total
-        order = item.order
-        order.total_amount = sum(i.line_total() for i in order.items.all())
-        order.save()
-        
-        # 3. Deduct Stock (AuditLog will catch the product save)
-        # Note: Ideally this should be atomic and safe.
-        
-        if item.product.quantity >= item.quantity:
-             item.product.quantity = F('quantity') - item.quantity
-             item.product.save()
-        else:
-             # This might error after save, which is bad practice without transaction. 
-             # But for this scope, let's assume valid input or improve later.
-             pass
-
 from core.permissions import IsManager, IsStaff
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -68,9 +33,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         return Order.objects.select_related('customer').order_by('-created_at')
 
     def perform_create(self, serializer):
-        # Staff must provide customer manually or it defaults to None (which might fail if model requires it)
-        # However, the serializer has 'customer' as required=False potentially, but the model likely needs it.
-        # Let's rely on validation.
         serializer.save()
 
 

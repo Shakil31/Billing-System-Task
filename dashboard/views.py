@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions
+from core.permissions import IsStaff, IsManager
 from rest_framework.response import Response
 from django.db.models import Sum, F
 from django.utils import timezone
@@ -13,7 +14,7 @@ class DashboardViewSet(viewsets.ViewSet):
     """
     API endpoint that returns sales metrics.
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStaff]
 
     def list(self, request):
         today = timezone.now().date()

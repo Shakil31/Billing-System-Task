@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from inventory.views import ProductViewSet
-from sales.views import OrderViewSet, OrderItemViewSet
+from sales.views import OrderViewSet
 from dashboard.views import DashboardViewSet
 from customers.views import CustomerViewSet
 from accounts.views import LoginView, logout_view, RegistrationView
@@ -11,7 +11,7 @@ from accounts.views import LoginView, logout_view, RegistrationView
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, basename='product')
 router.register(r'orders', OrderViewSet, basename='order')
-router.register(r'order-items', OrderItemViewSet, basename='order-item')
+
 router.register(r'dashboard', DashboardViewSet, basename='dashboard')
 router.register(r'customers', CustomerViewSet, basename='customer')
 
